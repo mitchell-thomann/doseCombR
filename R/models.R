@@ -25,7 +25,7 @@ fitmod <- function(dat,
                    chains=1,
                    type = "bin",
                    trace_plots = FALSE) {
-  ## MT: add call to load model text in jags
+  ## MT: add call to load model text in bugs
   init_seed <- list(.RNG.seed = round(runif(1, 1, 10000)), .RNG.name = "base::Wichmann-Hill")
   model <- suppressWarnings(jags.model(textConnection(modtext), data = dat_jags, n.chains = chains,
                                        n.adapt = 1000, quiet = TRUE))
