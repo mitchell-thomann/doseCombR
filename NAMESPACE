@@ -3,3 +3,4 @@
 export(fitmod)
 export(linear)
 import(rjags)
+importFrom(dplyr,data_frame)

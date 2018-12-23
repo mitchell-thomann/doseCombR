@@ -18,7 +18,7 @@ and \emph{psd} for prior means and standard deviations respectively.}
 Creates BUGS model for linear dose combination model
 }
 \examples{
-Dichotomous linear model:
+Dichotomous linear combination model:
 linear("binomial", prior = list(theta0 = list(0,10), theta1 = list(0,10), 
        theta2 = list(0,10), theta12 = list(0,10)))
        

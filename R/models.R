@@ -1,3 +1,33 @@
+#' Generate random dose-response data from sigmoid EMAX model, monotherapy (add combination next)
+#' 
+#' @param type data type, only supports "binomial" currently
+#' @param dose vector of monotherapy investigations doses
+#' @param n vector of sample sizes by dose
+#' @param e0 placebo effect in EMAX model, logit scale for binomial data
+#' @param emax emax effect in EMAX model, logit scale for binomial data
+#' @param ed50 ed50 parameter in EMAX model
+#' @param hill slope parameter in EMAX model
+#' 
+#' @return tibble of dose response data
+#' 
+#' @importFrom dplyr data_frame
+#' 
+gendr_emax <- function(type = "binomial",
+                       dose = c(0,2,5,10,15,30),
+                       n = rep(50,6),
+                       e0 = -2,
+                       emax = 2,
+                       ed50 = 7.5,
+                       hill = 2){
+  emax_dr <- e0 + emax*dose^hill/(ed50^hill + dose^hill)
+  if(type == "binomial") {
+    emax_prob <- exp(emax_dr)/(1 + exp(emax_dr))
+    resp <- rbinom(n=length(n),size=n,prob=emax_prob)
+    dat_dr <- data_frame(dose = dose, n = n, resp = resp)
+  }
+  return(dat_dr)
+}
+
 #' Fit Bayesian Dose Response Model Using rJAGS
 #'
 #' @param dat trial data_frame
@@ -8,7 +38,9 @@
 #' @param chains number of sample chains
 #' @param type response data type c("bin","cont")
 #' @param trace_plots indicator if traceplots should be output
+#' 
 #' @return MCMC samples (as MCMC list) from modtext on modvars
+#' 
 #' @examples
 #' Fit bayesian sigmoid EMAX model:
 #'
