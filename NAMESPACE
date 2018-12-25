@@ -2,5 +2,7 @@
 
 export(fitmod)
 export(linear)
+import(ggplot2)
+import(plotly)
 import(rjags)
 importFrom(dplyr,data_frame)

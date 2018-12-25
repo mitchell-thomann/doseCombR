@@ -8,7 +8,7 @@
 #' @param ed50 ed50 parameter in EMAX model
 #' @param hill slope parameter in EMAX model
 #'
-#' @return tibble of dose response data
+#' @return tibble of dose response data & plot of true & observed effect
 #'
 #' @importFrom dplyr data_frame
 #' @import ggplot2
@@ -33,26 +33,59 @@ gendr_emax <- function(type = "binomial",
   return(list(data = dat_dr, plot = p))
 }
 
-#' Generate random combination dose response data from linear models
+#' Linear combination function
+#' 
+#' @param type data type, "binomial" or "continuous"
+#' @param dose_1 combination dose 1
+#' @param dose_2 combination dose 2
+#' @param e0 placebo effect, logit scale for binomial data
+#' @param theta1 monotherapy slope for dose1, logit scale for binomial data
+#' @param theta2 monotherapy slope for dose 2, logit scale for binomial data
+#' @param theta12 interaction term, < 0 for antagonism, 0 for additivity, >0 for synergism
+#' 
+#' @return single combination probability
+#' 
+linearcomb <- function(type, dose_1, dose_2, e0, theta1, theta2, theta12){
+  lc <- e0 + dose_1*theta1 + dose_2*theta2 + dose_1*dose_2*theta12
+  if(type == "binomial") lc <- exp(lc)/(1+exp(lc))
+  return(lc)
+}
+
+#' Generate random combination dose response data using linear models
 #'
 #' @param type data type, only supports "binomial" currently
-#' @param dose1 vector of monotherapy investigational doses
-#' @param dose2 vector of monotherapy investigational doses
+#' @param dose_1 vector of monotherapy investigational doses for drug 1
+#' @param dose_2 vector of monotherapy investigational doses for drug 2
+#' @param n_total total number of subjects, (currently) assumes equivalent number of subjects per 
+#'   dose combination
 #' @param e0 placebo effect, logit scale for binomial data
-#'
+#' @param theta1 monotherapy slope for dose1, logit scale for binomial data
+#' @param theta2 monotherapy slope for dose 2, logit scale for binomial data
+#' @param theta12 interaction term, < 0 for antagonism, 0 for additivity, >0 for synergism
 #'
 #' @return tibble of dose response data
 #'
 #' @importFrom dplyr data_frame
+#' @import plotly
 #'
-gendr_emax_comb <- function(type = "binomial",
-                       dose = c(0, 2, 5, 10, 15, 30),
-                       n = rep(50, 6),
-                       e0 = -2,
-                       emax = 2,
-                       ed50 = 7.5,
-                       hill = 2) {
-
+gendr_linearcomb <- function(type = "binomial",
+                             dose_1 = c(0, 2, 5, 10, 15, 30),
+                             dose_2 = c(0, 1, 2, 4),
+                             n_total = 240,
+                             e0 = -2.5,
+                             theta1 = 0.25,
+                             theta2 = 0.5,
+                             theta12 = 0) {
+  dat_doses <- data_frame(dose1 = rep(dose_1, length(dose_2)),
+                          dose2 = rep(dose_2, each = length(dose_1)))
+  dat_doses$n <- rep(n_total/(length(dose_1)*length(dose_2)), nrow(dat_doses))
+  dat_dr <- dat_doses %>% mutate(prob = linearcomb(dose_1 = dose1, dose_2 = dose2,
+                                                   e0 = e0, theta1 = theta1, theta2 = theta2,
+                                                   theta12 = theta12, type = "binomial"),
+                                 resp = rbinom(size = n, prob = prob, n = n()),
+                                 respmean = resp/n)
+  # add plotly 3d plot
+  return(list(data = dat_dr))
 }
 
 #' Fit Bayesian Dose Response Model Using rJAGS

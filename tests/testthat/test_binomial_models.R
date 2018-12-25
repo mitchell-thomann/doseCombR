@@ -5,6 +5,7 @@ set.seed(1)
 
 # monotherapy binomial data
 bindat <- gendr_emax()$data
+combdat <- gendr_linearcomb()$data
 
 test_that("data generated", {
   expect_equal(sum(bindat$n), 300)

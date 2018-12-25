@@ -10,8 +10,8 @@ linear(datatype, prior = list(theta0 = list(pmean, psd), theta1 =
 \arguments{
 \item{datatype}{character variable for response data type, args = c(\strong{"binomial"})}
 
-\item{prior}{list of parameters in model.  For this model, must contain lists: \strong{theta0}, 
-\strong{theta1}, \strong{theta2}, \strong{theta12}.  Each list has values \emph{pmean} 
+\item{prior}{list of parameters in model.  For this model, must contain lists: \strong{theta0},
+\strong{theta1}, \strong{theta2}, \strong{theta12}.  Each list has values \emph{pmean}
 and \emph{psd} for prior means and standard deviations respectively.}
 }
 \description{
@@ -19,7 +19,7 @@ Creates BUGS model for linear dose combination model
 }
 \examples{
 Dichotomous linear combination model:
-linear("binomial", prior = list(theta0 = list(0,10), theta1 = list(0,10), 
+linear("binomial", prior = list(theta0 = list(0,10), theta1 = list(0,10),
        theta2 = list(0,10), theta12 = list(0,10)))
-       
+
 }

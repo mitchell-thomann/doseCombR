@@ -2,7 +2,7 @@
 % Please edit documentation in R/models.R
 \name{gendr_emax}
 \alias{gendr_emax}
-\title{Generate random dose-response data from sigmoid EMAX model, monotherapy (add combination next)}
+\title{Generate random dose-response data from monotherapy sigmoid EMAX model}
 \usage{
 gendr_emax(type = "binomial", dose = c(0, 2, 5, 10, 15, 30),
   n = rep(50, 6), e0 = -2, emax = 2, ed50 = 7.5, hill = 2)
@@ -10,7 +10,7 @@ gendr_emax(type = "binomial", dose = c(0, 2, 5, 10, 15, 30),
 \arguments{
 \item{type}{data type, only supports "binomial" currently}
 
-\item{dose}{vector of monotherapy investigations doses}
+\item{dose}{vector of monotherapy investigational doses}
 
 \item{n}{vector of sample sizes by dose}
 
@@ -23,8 +23,8 @@ gendr_emax(type = "binomial", dose = c(0, 2, 5, 10, 15, 30),
 \item{hill}{slope parameter in EMAX model}
 }
 \value{
-tibble of dose response data
+tibble of dose response data & plot of true & observed effect
 }
 \description{
-Generate random dose-response data from sigmoid EMAX model, monotherapy (add combination next)
+Generate random dose-response data from monotherapy sigmoid EMAX model
 }
