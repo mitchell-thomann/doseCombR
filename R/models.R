@@ -79,13 +79,17 @@ gendr_linearcomb <- function(type = "binomial",
   dat_doses <- data_frame(dose1 = rep(dose_1, length(dose_2)),
                           dose2 = rep(dose_2, each = length(dose_1)))
   dat_doses$n <- rep(n_total/(length(dose_1)*length(dose_2)), nrow(dat_doses))
-  dat_dr <- dat_doses %>% mutate(prob = linearcomb(dose_1 = dose1, dose_2 = dose2,
+  dat_dr <- dat_doses %>% mutate(true_probability = linearcomb(dose_1 = dose1, dose_2 = dose2,
                                                    e0 = e0, theta1 = theta1, theta2 = theta2,
                                                    theta12 = theta12, type = "binomial"),
-                                 resp = rbinom(size = n, prob = prob, n = n()),
-                                 respmean = resp/n)
-  # add plotly 3d plot
-  return(list(data = dat_dr))
+                                 resp = rbinom(size = n, prob = probability, n = n()),
+                                 observed_probability = resp/n)
+  dat_plot <- dat_dr %>% gather("true_probability", "observed_probability", key = "group", value = "mean")
+  p <- plot_ly(dat_plot, x = ~dose1, y = ~dose2, z = ~mean, color = ~group) %>% add_markers() %>%
+    layout(scene = list(xaxis = list(title = 'Dose 1'),
+                        yaxis = list(title = 'Dose 2'),
+                        zaxis = list(title = 'Value')))
+  return(list(data = dat_dr, plot = p))
 }
 
 #' Fit Bayesian Dose Response Model Using rJAGS
