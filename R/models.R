@@ -66,6 +66,7 @@ linearcomb <- function(type, dose_1, dose_2, e0, theta1, theta2, theta12){
 #' @return tibble of dose response data
 #'
 #' @importFrom dplyr data_frame
+#' @importFrom tidyr gather
 #' @import plotly
 #'
 gendr_linearcomb <- function(type = "binomial",
